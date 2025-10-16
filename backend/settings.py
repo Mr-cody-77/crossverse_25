@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-l_boql@b@r3&em$!ej2=x3h#re=m#@7-!8%1=-3u8-2_j9(_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://crossverse25.vercel.app/", "http://localhost:3000", "crossverse25.vercel.app"]
 
 
 # Application definition
