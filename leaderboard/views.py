@@ -10,43 +10,43 @@ from rest_framework.decorators import api_view
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def leaderboard_list(request):
-if request.method == 'GET':
-    # Sort leaderboard by fastest time
-    players = Leaderboard.objects.all().order_by('time')
-    serializer = LeaderboardSerializer(players, many=True)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        # Sort leaderboard by fastest time
+        players = Leaderboard.objects.all().order_by('time')
+        serializer = LeaderboardSerializer(players, many=True)
+        return Response(serializer.data)
 
-elif request.method == 'POST':
-    name = request.data.get('name')
-    time = request.data.get('time')
+    elif request.method == 'POST':
+        name = request.data.get('name')
+        time = request.data.get('time')
 
-    if not name or time is None:
-        return Response({"error": "Missing name or time"}, status=status.HTTP_400_BAD_REQUEST)
+        if not name or time is None:
+            return Response({"error": "Missing name or time"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Check if player already exists
-    existing_player = Leaderboard.objects.filter(name=name).first()
+        # Check if player already exists
+        existing_player = Leaderboard.objects.filter(name=name).first()
 
-    if existing_player:
-        # Update their time if new one is better (less time)
-        if time < existing_player.time:
-            existing_player.time = time
-            existing_player.save()
-            return Response(
-                {"message": f"Updated {name}'s best time"},
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                {"message": f"{name} already exists with a faster or equal time"},
-                status=status.HTTP_200_OK,
-            )
+        if existing_player:
+            # Update their time if new one is better (less time)
+            if time < existing_player.time:
+                existing_player.time = time
+                existing_player.save()
+                return Response(
+                    {"message": f"Updated {name}'s best time"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"message": f"{name} already exists with a faster or equal time"},
+                    status=status.HTTP_200_OK,
+                )
 
-    # If new player, create entry
-    serializer = LeaderboardSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # If new player, create entry
+        serializer = LeaderboardSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @csrf_exempt
 @api_view(['GET', 'POST'])
